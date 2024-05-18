@@ -21,7 +21,7 @@ if [ -f /usr/local/etc/k-ost.config ] ; then
   . /usr/local/etc/k-ost.config
 else
   echo "Brak pliku konfiguracyjnego!"
-  exit 1
+  exit 20
 fi
 # Sprawdzenie czy katalog/plik podany w konfiguracji istnieje.
 declare -ar lokalizacje_z_konfiguracji=(
@@ -31,19 +31,29 @@ declare -ar lokalizacje_z_konfiguracji=(
 for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
   [[ ! -d "${wartosc_z_tablicy}" && ! -f "${wartosc_z_tablicy}" ]] \
   && echo "Katalog lub plik z \"${wartosc_z_tablicy}\" nie istnieje." \
-  && exit 1
+  && exit 21
 done
+
+# Wczytanie modułu vlc_konwertuj_na_mp3.sh
+if [ -f "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh" ] ; then
+  . "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh"
+else
+  echo "Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh!"
+  exit 22
+fi
 
 # Obsługa argumentów
 while (( "${#}" > 0 )) ; do
   case "${1}" in
     -mp3|--konwertuj_na_mp3)
-      echo "Konwersja..."
+      vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
+                            "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" \
+                            "${domyslna_sciezka_logow}" "${usun_plik_po_przekonwertowaniu}"
       exit 0
       ;;
     *)
       echo "Nieznany argument ${1}! Użyj ${0} bez argumentów, aby wyświetlić pomoc."
-      exit 1
+      exit 10
       ;;
   esac
   shift
@@ -60,6 +70,13 @@ Aktualna konfiguracja:
   Ścieżka docelowa:                             "${domyslna_sciezka_docelowa}"
   Ścieżka logów:                                "${domyslna_sciezka_logow}"
   Ustawienie usun_plik_po_przekonwertowaniu:    "${usun_plik_po_przekonwertowaniu}"
+
+Kod wyjścia:
+  0         Skrypt wykonał się prawidłowo.
+  10        Nieznany argument skryptu.
+  20        Nie odnaleziono pliku konfiguracyjnego.
+  21        Plik lub katalog z pliku konfiguracyjnego nie istnieje.
+  22        Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh.
 POMOC
 
 exit 0
