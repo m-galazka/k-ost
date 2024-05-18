@@ -3,6 +3,7 @@
 # Autor: Mariusz Gałązka <m.galazka.email@gmail.com>
 # Link: https://github.com/m-galazka/k-ost
 
+##########################################################################################
 ### INSTALACJA
 # Aby móć skorzystać ze skrytu należy skonfigurować system operacyjny do obsługi skryptu.
 # Został utworzony specjalny skrypt instalacyjny, który należy uruchomić - ./install.sh.
@@ -13,14 +14,25 @@
 ### ZASTOSOWANIE
 # Skryptu używamy z poziomu terminala. Jeśli instalacja powiodła się pomyślnie.
 # To w terminalu wydajemy polecenie "k-ost".
-###
+##########################################################################################
 
 # Wczytanie pliku konfiguracyjnego.
 if [ -f /usr/local/etc/k-ost.config ] ; then
   . /usr/local/etc/k-ost.config
 else
-  echo "Brak pliku konfiguracyjnego!" && exit 1
+  echo "Brak pliku konfiguracyjnego!"
+  exit 1
 fi
+# Sprawdzenie czy katalog/plik podany w konfiguracji istnieje.
+declare -ar lokalizacje_z_konfiguracji=(
+    "${domyslna_sciezka_do_lokalizacji_modulow}" "${domyslna_sciezka_do_aplikacji_vlc}"
+    "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" "${domyslna_sciezka_logow}"
+)
+for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
+  [[ ! -d "${wartosc_z_tablicy}" && ! -f "${wartosc_z_tablicy}" ]] \
+  && echo "Katalog lub plik z \"${wartosc_z_tablicy}\" nie istnieje." \
+  && exit 1
+done
 
 # Obsługa argumentów
 while (( "${#}" > 0 )) ; do
