@@ -22,6 +22,7 @@ else
   echo "Brak pliku konfiguracyjnego!" && exit 1
 fi
 
+# Obsługa argumentów
 while (( "${#}" > 0 )) ; do
   case "${1}" in
     -mp3|--konwertuj_na_mp3)
@@ -29,12 +30,14 @@ while (( "${#}" > 0 )) ; do
       exit 0
       ;;
     *)
-      echo "Nieznany argument ${1}! Użyj ${0} bez argumentów, aby wyświetlić pomoc." && exit 1
+      echo "Nieznany argument ${1}! Użyj ${0} bez argumentów, aby wyświetlić pomoc."
+      exit 1
       ;;
   esac
   shift
 done
 
+# Wyświetlenie pomocy
 cat <<POMOC
 Użycie: "${0}" [-mp3|--konwertuj_na_mp3]
 
