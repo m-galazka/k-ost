@@ -31,7 +31,7 @@
 ##########################################################################################
 
 vlc_konwertuj_na_mp3() {
-  # Deklaracja zmiennych
+  # Deklaracja zmiennych.
   declare -r argument_sciezka_do_aplikacji_vlc="${1}"
   declare -r argument_sciezka_zrodlowa="${2}"
   declare -r argument_sciezka_docelowa="${3}"
@@ -43,7 +43,7 @@ vlc_konwertuj_na_mp3() {
   cd "${argument_sciezka_zrodlowa}"
 
   for plik in ${obslugiwane_formaty_do_konwersji[@]}; do
-    [ -e "${plik}" ] || continue
+    [[ -e "${plik}" ]] || continue
 
     declare -a vlc_komenda=(
       "${plik}"

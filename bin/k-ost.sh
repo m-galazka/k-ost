@@ -20,7 +20,7 @@
 ##########################################################################################
 
 # Wczytanie pliku konfiguracyjnego.
-if [ -f /usr/local/etc/k-ost.config ] ; then
+if [[ -f /usr/local/etc/k-ost.config ]] ; then
   . /usr/local/etc/k-ost.config
 else
   echo "Brak pliku konfiguracyjnego!"
@@ -37,15 +37,24 @@ for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
   && exit 21
 done
 
-# Wczytanie modułu vlc_konwertuj_na_mp3.sh
-if [ -f "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh" ] ; then
+# Sprawdzenie wersji zainstalowanego programu VLC.
+declare -r wersja_VLC=`${ENV_K_OST_DOMYSLNA_SCIEZKA_DO_APLIKACJI_VLC} --version 2>/dev/null | awk NR==1`
+if [[ -n "${wersja_VLC}" ]] && [[ "${wersja_VLC}" =~ "VLC" ]] ; then
+  echo "Zainstalowana wersja VLC: ${wersja_VLC}"
+else
+  echo "Nie odnaleziono programu VLC!"
+  exit 30
+fi
+
+# Wczytanie modułu vlc_konwertuj_na_mp3.sh.
+if [[ -f "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh" ]] ; then
   . "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh"
 else
   echo "Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh!"
   exit 22
 fi
 
-# Obsługa argumentów
+# Obsługa argumentów.
 while (( "${#}" > 0 )) ; do
   case "${1}" in
     -mp3|--konwertuj_na_mp3)
@@ -62,7 +71,7 @@ while (( "${#}" > 0 )) ; do
   shift
 done
 
-# Wyświetlenie pomocy
+# Wyświetlenie pomocy.
 cat <<POMOC
 Użycie: "${0}" [-mp3|--konwertuj_na_mp3]
 
@@ -80,6 +89,7 @@ Kod wyjścia:
   20        Nie odnaleziono pliku konfiguracyjnego.
   21        Plik lub katalog z pliku konfiguracyjnego nie istnieje.
   22        Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh.
+  30        Nie odnaleziono aplikacji VLC.
 POMOC
 
 exit 0
