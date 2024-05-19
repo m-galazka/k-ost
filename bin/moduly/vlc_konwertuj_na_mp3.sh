@@ -1,5 +1,35 @@
 #!/usr/bin/env bash
 
+# Autor: Mariusz Gałązka <m.galazka.email@gmail.com>
+# Link: https://github.com/m-galazka/k-ost
+
+##########################################################################################
+# Moduł odpowiedzialny za konwersję pliku do formatu mp3.
+# Moduł korzysta z aplikacji VLC zainstalowanej w systemie operacyjnym.
+#
+### PRZYKŁAD UŻYCIA
+# vlc_konwertuj_na_mp3 ARGUMENTY
+#
+#   ARGUMENTY:
+#     [1]=domyslna_sciezka_do_aplikacji_vlc # Ścieżka do aplikacji VLC
+#     [2]=domyslna_sciezka_zrodlowa         # Ścieżka do katalogu z plikami 
+#                                               przygotowanymi do konwersji
+#     [3]=domyslna_sciezka_docelowa         # Ścieżka do katalogu w którym zostaną
+#                                               zapisane pliku po przekonwertowaniu
+#     [4]=domyslna_sciezka_logow            # Ścieżka do katalogu w którym zostaną
+#                                               zapisane logi skryptu
+#     [5]=usun_plik_po_przekonwertowaniu    # Tryb pracy skryptu:
+#                                             - true  - usunie plik źródłowy 
+#                                                                  po przekonwertowaniu
+#                                             - false - nie usunie pliku źródłowego
+#                                                                  po przekonwertowaniu
+#
+# Przykład wywołania:
+# vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
+#                      "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" \
+#                      "${domyslna_sciezka_logow}" "${usun_plik_po_przekonwertowaniu}"
+##########################################################################################
+
 vlc_konwertuj_na_mp3() {
   # Deklaracja zmiennych
   declare -r argument_sciezka_do_aplikacji_vlc="${1}"

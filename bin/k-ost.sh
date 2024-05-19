@@ -4,16 +4,19 @@
 # Link: https://github.com/m-galazka/k-ost
 
 ##########################################################################################
-### INSTALACJA
-# Aby móć skorzystać ze skrytu należy skonfigurować system operacyjny do obsługi skryptu.
-# Został utworzony specjalny skrypt instalacyjny, który należy uruchomić - ./install.sh.
-# Skrypt uruchamiamy z lokalizacji katalogu k-ost oraz uprawnieniami roota.
-# Skrypt stworzy linki symboliczne dla pliku k-ost/bin/k-ost oraz k-ost/etc/k-ost.config
-# Po instalacji skryptu. Musimy skonfigurować program pod nasz system operacyjny.
-# W tym celu należy edytować plik k-ost/etc/k-ost.config.
-### ZASTOSOWANIE
-# Skryptu używamy z poziomu terminala. Jeśli instalacja powiodła się pomyślnie.
-# To w terminalu wydajemy polecenie "k-ost".
+# Skrypt stworzony dla ułatwienia konwersji pliku do formatu mp3.
+# Skrypt wykorzystuję aplikację VLC, którą należy zainstalować w systemie operacyjnym.
+#
+### INSTALACJA SKRYPTU
+# Przejdź do głównego katalogu k-ost.
+# Uruchom z uprawnieniami root skrypt instalacyjny  "./install.sh".
+#   Skrypt install.sh utworzony w systemie operacyjnym linki symboliczne dla:
+#       - k-ost/bin/k-ost.sh
+#       - k-ost/etc/k-ost.config
+# Skonfiguruj skrypt edytując plik konfiguracyjny "k-ost/etc/k-ost.config".
+#
+### PRZYKŁAD UŻYCIA
+# W terminalu wydaj polecenie "k-ost".
 ##########################################################################################
 
 # Wczytanie pliku konfiguracyjnego.
@@ -47,8 +50,8 @@ while (( "${#}" > 0 )) ; do
   case "${1}" in
     -mp3|--konwertuj_na_mp3)
       vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
-                            "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" \
-                            "${domyslna_sciezka_logow}" "${usun_plik_po_przekonwertowaniu}"
+                           "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" \
+                           "${domyslna_sciezka_logow}" "${usun_plik_po_przekonwertowaniu}"
       exit 0
       ;;
     *)
