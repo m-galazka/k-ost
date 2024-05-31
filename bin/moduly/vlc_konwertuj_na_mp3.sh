@@ -16,9 +16,7 @@
 #                                               przygotowanymi do konwersji
 #     [3]=domyslna_sciezka_docelowa         # Ścieżka do katalogu w którym zostaną
 #                                               zapisane pliku po przekonwertowaniu
-#     [4]=domyslna_sciezka_logow            # Ścieżka do katalogu w którym zostaną
-#                                               zapisane logi skryptu
-#     [5]=usun_plik_po_przekonwertowaniu    # Tryb pracy skryptu:
+#     [4]=usun_plik_po_przekonwertowaniu    # Tryb pracy skryptu:
 #                                             - true  - usunie plik źródłowy 
 #                                                                  po przekonwertowaniu
 #                                             - false - nie usunie pliku źródłowego
@@ -27,7 +25,7 @@
 # Przykład wywołania:
 # vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
 #                      "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" \
-#                      "${domyslna_sciezka_logow}" "${usun_plik_po_przekonwertowaniu}"
+#                      "${usun_plik_po_przekonwertowaniu}"
 ##########################################################################################
 
 vlc_konwertuj_na_mp3() {
@@ -35,8 +33,7 @@ vlc_konwertuj_na_mp3() {
   declare -r argument_sciezka_do_aplikacji_vlc="${1}"
   declare -r argument_sciezka_zrodlowa="${2}"
   declare -r argument_sciezka_docelowa="${3}"
-  declare -r argument_sciezka_logow="${4}"
-  declare -r argument_usun_plik_po_przekonwertowaniu="${5}"
+  declare -r argument_usun_plik_po_przekonwertowaniu="${4}"
 
   declare -ar obslugiwane_formaty_do_konwersji=("*.aifc" "*.mp4")
 
@@ -53,7 +50,7 @@ vlc_konwertuj_na_mp3() {
       vlc://quit
     )
     
-    "${argument_sciezka_do_aplikacji_vlc}" "${vlc_komenda[@]}" &> "${argument_sciezka_logow}/${plik}.log"
+    "${argument_sciezka_do_aplikacji_vlc}" "${vlc_komenda[@]}" &> /dev/null
     [[ "${argument_usun_plik_po_przekonwertowaniu}" == "true" ]] && rm "${plik}" && echo "Plik \"${plik}\" został usunięty."
   done
 }

@@ -16,7 +16,9 @@
 # Skonfiguruj skrypt edytując plik konfiguracyjny "k-ost/etc/k-ost.config".
 #
 ### PRZYKŁAD UŻYCIA
-# W terminalu wydaj polecenie "k-ost".
+# W terminalu wydaj następujące polecenia:
+# Wyświetl stronę pomocy: "k-ost"
+# Przekonwertuj pliki na mp3 "k-ost -m" lub "k-ost --mp3"
 ##########################################################################################
 
 # Wczytanie pliku konfiguracyjnego.
@@ -29,7 +31,7 @@ fi
 # Sprawdzenie czy katalog/plik podany w konfiguracji istnieje.
 declare -ar lokalizacje_z_konfiguracji=(
     "${domyslna_sciezka_do_lokalizacji_modulow}" "${domyslna_sciezka_do_aplikacji_vlc}"
-    "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" "${domyslna_sciezka_logow}"
+    "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}"
 )
 for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
   [[ ! -d "${wartosc_z_tablicy}" && ! -f "${wartosc_z_tablicy}" ]] \
@@ -38,7 +40,7 @@ for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
 done
 
 # Sprawdzenie wersji zainstalowanego programu VLC.
-declare -r wersja_VLC=`${ENV_K_OST_DOMYSLNA_SCIEZKA_DO_APLIKACJI_VLC} --version 2>/dev/null | awk NR==1`
+declare -r wersja_VLC=`${ENV_K_OST_DOMYSLNA_SCIEZKA_DO_APLIKACJI_VLC} --version 2> /dev/null | awk NR==1`
 if [[ -n "${wersja_VLC}" ]] && [[ "${wersja_VLC}" =~ "VLC" ]] ; then
   echo "Zainstalowana wersja VLC: ${wersja_VLC}"
 else
@@ -57,10 +59,11 @@ fi
 # Obsługa argumentów.
 while (( "${#}" > 0 )) ; do
   case "${1}" in
-    -mp3|--konwertuj_na_mp3)
+    -m|--mp3)
       vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
-                           "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" \
-                           "${domyslna_sciezka_logow}" "${usun_plik_po_przekonwertowaniu}"
+                           "${domyslna_sciezka_zrodlowa}" \
+                           "${domyslna_sciezka_docelowa}" \
+                           "${usun_plik_po_przekonwertowaniu}"
       exit 0
       ;;
     *)
@@ -73,23 +76,25 @@ done
 
 # Wyświetlenie pomocy.
 cat <<POMOC
-Użycie: "${0}" [-mp3|--konwertuj_na_mp3]
+Użycie: "${0}" [-m|--mp3]
+
+ARGUMENTY:
+  -m|--mp3                                      Uruchom konwersję plików do formatu mp3.
 
 Aktualna konfiguracja:
   Ścieżka do modułów:                           "${domyslna_sciezka_do_lokalizacji_modulow}"
   Ścieżka do aplikacji VLC:                     "${domyslna_sciezka_do_aplikacji_vlc}"
   Ścieżka źródłowa:                             "${domyslna_sciezka_zrodlowa}"
   Ścieżka docelowa:                             "${domyslna_sciezka_docelowa}"
-  Ścieżka logów:                                "${domyslna_sciezka_logow}"
   Ustawienie usun_plik_po_przekonwertowaniu:    "${usun_plik_po_przekonwertowaniu}"
 
 Kod wyjścia:
-  0         Skrypt wykonał się prawidłowo.
-  10        Nieznany argument skryptu.
-  20        Nie odnaleziono pliku konfiguracyjnego.
-  21        Plik lub katalog z pliku konfiguracyjnego nie istnieje.
-  22        Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh.
-  30        Nie odnaleziono aplikacji VLC.
+   0                                            Skrypt wykonał się prawidłowo.
+  10                                            Nieznany argument skryptu.
+  20                                            Nie odnaleziono pliku konfiguracyjnego.
+  21                                            Plik lub katalog z pliku konfiguracyjnego nie istnieje.
+  22                                            Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh.
+  30                                            Nie odnaleziono aplikacji VLC.
 POMOC
 
 exit 0
