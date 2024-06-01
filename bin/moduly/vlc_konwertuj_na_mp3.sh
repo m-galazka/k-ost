@@ -7,7 +7,7 @@
 # Moduł odpowiedzialny za konwersję pliku do formatu mp3.
 # Moduł korzysta z aplikacji VLC zainstalowanej w systemie operacyjnym.
 #
-### PRZYKŁAD UŻYCIA
+### OPIS
 # vlc_konwertuj_na_mp3 ARGUMENTY
 #
 #   ARGUMENTY:
@@ -22,9 +22,10 @@
 #                                             - false - nie usunie pliku źródłowego
 #                                                                  po przekonwertowaniu
 #
-# Przykład wywołania:
+### PRZYKŁAD UŻYCIA
 # vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
-#                      "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}" \
+#                      "${domyslna_sciezka_zrodlowa}" \
+#                      "${domyslna_sciezka_docelowa}" \
 #                      "${usun_plik_po_przekonwertowaniu}"
 ##########################################################################################
 
@@ -37,8 +38,20 @@ vlc_konwertuj_na_mp3() {
 
   declare -ar obslugiwane_formaty_do_konwersji=("*.aifc" "*.mp4")
 
-  cd "${argument_sciezka_zrodlowa}"
+  declare -r l_tput_sc="$(tput sc)"
+  declare -r l_tput_rc="$(tput rc)"
+  declare -r l_tput_el="$(tput el)"
+  declare -r l_tput_blink="$(tput blink)"
+  declare -r l_tput_civis="$(tput civis)"
+  declare -r l_tput_cnorm="$(tput cnorm)"
+  declare -r l_tput_sgr0="$(tput sgr0)"
 
+  declare -r l_tput_setaf_red="$(tput setaf 1)"
+  declare -r l_tput_setaf_green="$(tput setaf 2)"
+  declare -r l_tput_setaf_yellow="$(tput setaf 3)"
+  declare -r l_tput_setaf_cyan="$(tput setaf 6)"
+
+  cd "${argument_sciezka_zrodlowa}"
   for plik in ${obslugiwane_formaty_do_konwersji[@]}; do
     [[ -e "${plik}" ]] || continue
 
@@ -50,7 +63,11 @@ vlc_konwertuj_na_mp3() {
       vlc://quit
     )
     
+    printf "%s: %s" "${plik}" "${l_tput_sc}" >&2
+    printf "%s[%s%sKonwertuje...%s]" "${l_tput_rc}" "${l_tput_blink}" "${l_tput_setaf_cyan}" "${l_tput_sgr0}" >&2
     "${argument_sciezka_do_aplikacji_vlc}" "${vlc_komenda[@]}" &> /dev/null
-    [[ "${argument_usun_plik_po_przekonwertowaniu}" == "true" ]] && rm "${plik}" && echo "Plik \"${plik}\" został usunięty."
+    printf "%s%s[%sGotowe%s]\n" "${l_tput_rc}" "${l_tput_el}" "${l_tput_setaf_green}" "${l_tput_sgr0}" >&2
+    [[ "${argument_usun_plik_po_przekonwertowaniu}" == "true" ]] && rm "${plik}" \
+    && printf "[%sINFO%s]Źródłowy plik \"%s\" został usunięty.\n" "${l_tput_setaf_yellow}" "${l_tput_sgr0}" "${plik}" >&2
   done
 }

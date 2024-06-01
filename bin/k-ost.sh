@@ -17,15 +17,32 @@
 #
 ### PRZYKŁAD UŻYCIA
 # W terminalu wydaj następujące polecenia:
-# Wyświetl stronę pomocy: "k-ost"
-# Przekonwertuj pliki na mp3 "k-ost -m" lub "k-ost --mp3"
+#   Wyświetl stronę pomocy: "k-ost".
+#   Przekonwertuj pliki na mp3 "k-ost konwertuj mp3".
 ##########################################################################################
+
+# Deklaracje tput
+declare -r tput_sc="$(tput sc)"
+declare -r tput_rc="$(tput rc)"
+declare -r tput_el="$(tput el)"
+declare -r tput_blink="$(tput blink)"
+declare -r tput_sgr0="$(tput sgr0)"
+
+declare -r tput_setaf_red="$(tput setaf 1)"
+declare -r tput_setaf_green="$(tput setaf 2)"
+declare -r tput_setaf_yellow="$(tput setaf 3)"
+declare -r tput_setaf_cyan="$(tput setaf 6)"
+
+## Rozpoczęcie etapu weryfikacyjnego
+printf "Trwa sprawdzanie poprawności konfiguracji" >&2
+printf "%s [%s%sW TRAKCIE%s]" "${tput_sc}" "${tput_blink}" "${tput_setaf_cyan}" "${tput_sgr0}" >&2
 
 # Wczytanie pliku konfiguracyjnego.
 if [[ -f /usr/local/etc/k-ost.config ]] ; then
   . /usr/local/etc/k-ost.config
 else
-  echo "Brak pliku konfiguracyjnego!"
+  printf "%s%s [%sBŁĄD%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_red}" "${tput_sgr0}" >&2
+  printf "%sBrak pliku konfiguracyjnego (k-ost.config)!%s\n" "${tput_setaf_red}" "${tput_sgr0}" >&2
   exit 20
 fi
 # Sprawdzenie czy katalog/plik podany w konfiguracji istnieje.
@@ -35,39 +52,48 @@ declare -ar lokalizacje_z_konfiguracji=(
 )
 for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
   [[ ! -d "${wartosc_z_tablicy}" && ! -f "${wartosc_z_tablicy}" ]] \
-  && echo "Katalog lub plik z \"${wartosc_z_tablicy}\" nie istnieje." \
+  && printf "%s%s [%sBŁĄD%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_red}" "${tput_sgr0}" >&2\
+  && printf "%sKatalog lub plik z \"%s\" nie istnieje.%s\n" "${tput_setaf_red}" "${wartosc_z_tablicy}" "${tput_sgr0}" >&2\
   && exit 21
 done
-
-# Sprawdzenie wersji zainstalowanego programu VLC.
-declare -r wersja_VLC=`${ENV_K_OST_DOMYSLNA_SCIEZKA_DO_APLIKACJI_VLC} --version 2> /dev/null | awk NR==1`
-if [[ -n "${wersja_VLC}" ]] && [[ "${wersja_VLC}" =~ "VLC" ]] ; then
-  echo "Zainstalowana wersja VLC: ${wersja_VLC}"
-else
-  echo "Nie odnaleziono programu VLC!"
-  exit 30
-fi
 
 # Wczytanie modułu vlc_konwertuj_na_mp3.sh.
 if [[ -f "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh" ]] ; then
   . "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh"
 else
-  echo "Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh!"
+  printf "%s%s [%sBŁĄD%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_red}" "${tput_sgr0}" >&2
+  printf "%sNie odnaleziono modułu vlc_konwertuj_na_mp3.sh!%s\n" "${tput_setaf_red}" "${tput_sgr0}" >&2
   exit 22
 fi
+
+## Zakończenie etapu weryfikacyjnego
+printf "%s%s [%sOK%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_green}" "${tput_sgr0}" >&2
 
 # Obsługa argumentów.
 while (( "${#}" > 0 )) ; do
   case "${1}" in
-    -m|--mp3)
-      vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
-                           "${domyslna_sciezka_zrodlowa}" \
-                           "${domyslna_sciezka_docelowa}" \
-                           "${usun_plik_po_przekonwertowaniu}"
-      exit 0
+    konwertuj)
+      case "${2}" in
+        mp3)
+          vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
+                               "${domyslna_sciezka_zrodlowa}" \
+                               "${domyslna_sciezka_docelowa}" \
+                               "${usun_plik_po_przekonwertowaniu}"
+          exit 0
+          ;;
+        "")
+          printf "%sBrak argumentu dla opcji \"%s\"! Użyj %s bez argumentów, aby wyświetlić pomoc.%s\n" "${tput_setaf_red}" "${1}" "${0}" "${tput_sgr0}" >&2
+          exit 10
+          ;;
+        *)
+          printf "%sNieznany argument \"%s\" dla opcji \"%s\"! Użyj %s bez argumentów, aby wyświetlić pomoc.%s\n" "${tput_setaf_red}" "${2}" "${1}" "${0}" "${tput_sgr0}" >&2
+          exit 10
+          ;;
+      esac
+      shift
       ;;
     *)
-      echo "Nieznany argument ${1}! Użyj ${0} bez argumentów, aby wyświetlić pomoc."
+      printf "%sNieznany argument \"%s\"! Użyj %s bez argumentów, aby wyświetlić pomoc.%s\n" "${tput_setaf_red}" "${1}" "${0}" "${tput_sgr0}" >&2
       exit 10
       ;;
   esac
@@ -76,25 +102,32 @@ done
 
 # Wyświetlenie pomocy.
 cat <<POMOC
-Użycie: "${0}" [-m|--mp3]
-
-ARGUMENTY:
-  -m|--mp3                                      Uruchom konwersję plików do formatu mp3.
-
-Aktualna konfiguracja:
-  Ścieżka do modułów:                           "${domyslna_sciezka_do_lokalizacji_modulow}"
-  Ścieżka do aplikacji VLC:                     "${domyslna_sciezka_do_aplikacji_vlc}"
-  Ścieżka źródłowa:                             "${domyslna_sciezka_zrodlowa}"
-  Ścieżka docelowa:                             "${domyslna_sciezka_docelowa}"
-  Ustawienie usun_plik_po_przekonwertowaniu:    "${usun_plik_po_przekonwertowaniu}"
-
-Kod wyjścia:
-   0                                            Skrypt wykonał się prawidłowo.
-  10                                            Nieznany argument skryptu.
-  20                                            Nie odnaleziono pliku konfiguracyjnego.
-  21                                            Plik lub katalog z pliku konfiguracyjnego nie istnieje.
-  22                                            Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh.
-  30                                            Nie odnaleziono aplikacji VLC.
+Użycie: ${tput_setaf_yellow}"${0}" [-m|--mp3]${tput_sgr0}
+${tput_setaf_cyan}
+########################################
+# Opis dostępnych argumentów.          #
+########################################${tput_sgr0}
+konwertuj                                      Uruchom tryb konwersji plików.
+  mp3                                          Konwertuj pliki do formatu mp3.
+-----------------------------------------------------------------------------------------------------${tput_setaf_cyan}
+########################################
+# Opis aktualnej konfiguracji.         #
+########################################${tput_sgr0}
+Ścieżka do modułów:                           "${domyslna_sciezka_do_lokalizacji_modulow}"
+Ścieżka do aplikacji VLC:                     "${domyslna_sciezka_do_aplikacji_vlc}"
+Ścieżka źródłowa:                             "${domyslna_sciezka_zrodlowa}"
+Ścieżka docelowa:                             "${domyslna_sciezka_docelowa}"
+Ustawienie usun_plik_po_przekonwertowaniu:    "${usun_plik_po_przekonwertowaniu}"
+-----------------------------------------------------------------------------------------------------${tput_setaf_cyan}
+########################################
+# Opis kodów wyjścia.                  #
+########################################${tput_sgr0}
+ 0                                            Skrypt wykonał się prawidłowo.
+10                                            Nieznany argument skryptu.
+20                                            Nie odnaleziono pliku konfiguracyjnego.
+21                                            Plik lub katalog z pliku konfiguracyjnego nie istnieje.
+22                                            Nie odnaleziono modułu vlc_konwertuj_na_mp3.sh.
+30                                            Nie odnaleziono aplikacji VLC.
 POMOC
 
 exit 0
