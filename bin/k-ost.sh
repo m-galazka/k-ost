@@ -47,8 +47,7 @@ else
 fi
 # Sprawdzenie czy katalog/plik podany w konfiguracji istnieje.
 declare -ar lokalizacje_z_konfiguracji=(
-    "${domyslna_sciezka_do_lokalizacji_modulow}" "${domyslna_sciezka_do_aplikacji_vlc}"
-    "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}"
+    "${domyslna_sciezka_do_aplikacji_vlc}" "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}"
 )
 for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
   [[ ! -d "${wartosc_z_tablicy}" && ! -f "${wartosc_z_tablicy}" ]] \
@@ -58,8 +57,10 @@ for wartosc_z_tablicy in "${lokalizacje_z_konfiguracji[@]}"; do
 done
 
 # Wczytanie modułu vlc_konwertuj_na_mp3.sh.
-if [[ -f "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh" ]] ; then
-  . "${domyslna_sciezka_do_lokalizacji_modulow}/vlc_konwertuj_na_mp3.sh"
+declare -r sciezka_do_katalogu_k_ost="$(realpath "${0}")"
+declare -r sciezka_do_katalogu_k_ost_bin="${sciezka_do_katalogu_k_ost%k-ost.sh}"
+if [[ -f "${sciezka_do_katalogu_k_ost_bin}/moduly/vlc_konwertuj_na_mp3.sh" ]] ; then
+  . "${sciezka_do_katalogu_k_ost_bin}/moduly/vlc_konwertuj_na_mp3.sh"
 else
   printf "%s%s [%sBŁĄD%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_red}" "${tput_sgr0}" >&2
   printf "%sNie odnaleziono modułu vlc_konwertuj_na_mp3.sh!%s\n" "${tput_setaf_red}" "${tput_sgr0}" >&2
@@ -113,7 +114,6 @@ konwertuj                                      Uruchom tryb konwersji plików.
 ########################################
 # Opis aktualnej konfiguracji.         #
 ########################################${tput_sgr0}
-Ścieżka do modułów:                           "${domyslna_sciezka_do_lokalizacji_modulow}"
 Ścieżka do aplikacji VLC:                     "${domyslna_sciezka_do_aplikacji_vlc}"
 Ścieżka źródłowa:                             "${domyslna_sciezka_zrodlowa}"
 Ścieżka docelowa:                             "${domyslna_sciezka_docelowa}"
