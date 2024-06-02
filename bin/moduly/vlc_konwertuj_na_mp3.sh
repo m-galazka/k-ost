@@ -38,18 +38,18 @@ vlc_konwertuj_na_mp3() {
 
   declare -ar obslugiwane_formaty_do_konwersji=("*.aifc" "*.mp4")
 
-  declare -r l_tput_sc="$(tput sc)"
-  declare -r l_tput_rc="$(tput rc)"
-  declare -r l_tput_el="$(tput el)"
-  declare -r l_tput_blink="$(tput blink)"
-  declare -r l_tput_civis="$(tput civis)"
-  declare -r l_tput_cnorm="$(tput cnorm)"
-  declare -r l_tput_sgr0="$(tput sgr0)"
+  declare -r m_vlc_tput_sc="$(tput sc)"
+  declare -r m_vlc_tput_rc="$(tput rc)"
+  declare -r m_vlc_tput_el="$(tput el)"
+  declare -r m_vlc_tput_blink="$(tput blink)"
+  declare -r m_vlc_tput_civis="$(tput civis)"
+  declare -r m_vlc_tput_cnorm="$(tput cnorm)"
+  declare -r m_vlc_tput_sgr0="$(tput sgr0)"
 
-  declare -r l_tput_setaf_red="$(tput setaf 1)"
-  declare -r l_tput_setaf_green="$(tput setaf 2)"
-  declare -r l_tput_setaf_yellow="$(tput setaf 3)"
-  declare -r l_tput_setaf_cyan="$(tput setaf 6)"
+  declare -r m_vlc_tput_setaf_red="$(tput setaf 1)"
+  declare -r m_vlc_tput_setaf_green="$(tput setaf 2)"
+  declare -r m_vlc_tput_setaf_yellow="$(tput setaf 3)"
+  declare -r m_vlc_tput_setaf_cyan="$(tput setaf 6)"
 
   cd "${argument_sciezka_zrodlowa}"
   for plik in ${obslugiwane_formaty_do_konwersji[@]}; do
@@ -63,11 +63,11 @@ vlc_konwertuj_na_mp3() {
       vlc://quit
     )
     
-    printf "%s: %s" "${plik}" "${l_tput_sc}" >&2
-    printf "%s[%s%sKonwertuje...%s]" "${l_tput_rc}" "${l_tput_blink}" "${l_tput_setaf_cyan}" "${l_tput_sgr0}" >&2
+    printf "%s: %s" "${plik}" "${m_vlc_tput_sc}" >&2
+    printf "%s[%s%sKonwertuje...%s]" "${m_vlc_tput_rc}" "${m_vlc_tput_blink}" "${m_vlc_tput_setaf_cyan}" "${m_vlc_tput_sgr0}" >&2
     "${argument_sciezka_do_aplikacji_vlc}" "${vlc_komenda[@]}" &> /dev/null
-    printf "%s%s[%sGotowe%s]\n" "${l_tput_rc}" "${l_tput_el}" "${l_tput_setaf_green}" "${l_tput_sgr0}" >&2
+    printf "%s%s[%sGotowe%s]\n" "${m_vlc_tput_rc}" "${m_vlc_tput_el}" "${m_vlc_tput_setaf_green}" "${m_vlc_tput_sgr0}" >&2
     [[ "${argument_usun_plik_po_przekonwertowaniu}" == "true" ]] && rm "${plik}" \
-    && printf "[%sINFO%s]Źródłowy plik \"%s\" został usunięty.\n" "${l_tput_setaf_yellow}" "${l_tput_sgr0}" "${plik}" >&2
+    && printf "[%sINFO%s]Źródłowy plik \"%s\" został usunięty.\n" "${m_vlc_tput_setaf_yellow}" "${m_vlc_tput_sgr0}" "${plik}" >&2
   done
 }
