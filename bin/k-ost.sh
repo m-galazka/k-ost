@@ -27,6 +27,7 @@ else
   printf "%sBrak pliku konfiguracyjnego (k-ost.config)!%s\n" "${tput_setaf_red}" "${tput_sgr0}" >&2
   exit 20
 fi
+
 # Sprawdzenie czy katalog/plik podany w konfiguracji istnieje.
 declare -ar lokalizacje_z_konfiguracji=(
     "${domyslna_sciezka_do_aplikacji_vlc}" "${domyslna_sciezka_zrodlowa}" "${domyslna_sciezka_docelowa}"
@@ -53,7 +54,7 @@ fi
 printf "%s%s [%sOK%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_green}" "${tput_sgr0}" >&2
 
 # Obsługa argumentów.
-while (( "${#}" > 0 )) ; do
+if [[ "${#}" > 0 ]] ; then
   case "${1}" in
     konwertuj)
       case "${2}" in
@@ -73,15 +74,13 @@ while (( "${#}" > 0 )) ; do
           exit 10
           ;;
       esac
-      shift
       ;;
     *)
       printf "%sNieznany argument \"%s\"! Użyj %s bez argumentów, aby wyświetlić pomoc.%s\n" "${tput_setaf_red}" "${1}" "${0}" "${tput_sgr0}" >&2
       exit 10
       ;;
   esac
-  shift
-done
+fi
 
 # Wyświetlenie pomocy.
 cat <<POMOC

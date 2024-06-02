@@ -10,16 +10,16 @@
 # vlc_konwertuj_na_mp3 ARGUMENTY
 #
 #   ARGUMENTY:
-#     [1]=domyslna_sciezka_do_aplikacji_vlc # Ścieżka do aplikacji VLC
-#     [2]=domyslna_sciezka_zrodlowa         # Ścieżka do katalogu z plikami 
-#                                               przygotowanymi do konwersji
-#     [3]=domyslna_sciezka_docelowa         # Ścieżka do katalogu w którym zostaną
-#                                               zapisane pliku po przekonwertowaniu
-#     [4]=usun_plik_po_przekonwertowaniu    # Tryb pracy skryptu:
-#                                             - true  - usunie plik źródłowy 
-#                                                                  po przekonwertowaniu
-#                                             - false - nie usunie pliku źródłowego
-#                                                                  po przekonwertowaniu
+#     [1]=domyslna_sciezka_do_aplikacji_vlc    # Ścieżka do aplikacji VLC
+#     [2]=domyslna_sciezka_zrodlowa            # Ścieżka do katalogu z plikami 
+#                                                  przygotowanymi do konwersji
+#     [3]=domyslna_sciezka_docelowa            # Ścieżka do katalogu w którym zostaną
+#                                                  zapisane pliku po przekonwertowaniu
+#     [4]=usun_plik_po_przekonwertowaniu       # Tryb pracy skryptu:
+#                                                - true  - usunie plik źródłowy 
+#                                                          po przekonwertowaniu
+#                                                - false - nie usunie pliku źródłowego
+#                                                          po przekonwertowaniu
 #
 ### PRZYKŁAD UŻYCIA
 # vlc_konwertuj_na_mp3 "${domyslna_sciezka_do_aplikacji_vlc}" \
@@ -28,14 +28,17 @@
 #                      "${usun_plik_po_przekonwertowaniu}"
 
 vlc_konwertuj_na_mp3() {
-  # Deklaracja zmiennych.
+  # Deklaracja zmiennych podanych w argumentach funkcji.
   declare -r argument_sciezka_do_aplikacji_vlc="${1}"
   declare -r argument_sciezka_zrodlowa="${2}"
   declare -r argument_sciezka_docelowa="${3}"
   declare -r argument_usun_plik_po_przekonwertowaniu="${4}"
 
+  # Deklaracja tablicy z dostępnymi formatami konwersji.
+  # Pliki w tych formatach zostaną przekonwertowane na mp3.
   declare -ar obslugiwane_formaty_do_konwersji=("*.aifc" "*.mp4")
 
+  # Deklaracja zmiennych tput.
   declare -r m_vlc_tput_sc="$(tput sc)"
   declare -r m_vlc_tput_rc="$(tput rc)"
   declare -r m_vlc_tput_el="$(tput el)"
@@ -49,6 +52,7 @@ vlc_konwertuj_na_mp3() {
   declare -r m_vlc_tput_setaf_yellow="$(tput setaf 3)"
   declare -r m_vlc_tput_setaf_cyan="$(tput setaf 6)"
 
+  # Proces konwersji.
   cd "${argument_sciezka_zrodlowa}"
   for plik in ${obslugiwane_formaty_do_konwersji[@]}; do
     [[ -e "${plik}" ]] || continue
