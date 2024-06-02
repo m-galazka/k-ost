@@ -67,8 +67,12 @@ vlc_konwertuj_na_mp3() {
     
     printf "%s: %s" "${plik}" "${m_vlc_tput_sc}" >&2
     printf "%s[%s%sKonwertuje...%s]" "${m_vlc_tput_rc}" "${m_vlc_tput_blink}" "${m_vlc_tput_setaf_cyan}" "${m_vlc_tput_sgr0}" >&2
+
+    # Wywołanie VLC KOMENDA - uruchomienie konwersji pliku.
     "${argument_sciezka_do_aplikacji_vlc}" "${vlc_komenda[@]}" &> /dev/null
+
     printf "%s%s[%sGotowe%s]\n" "${m_vlc_tput_rc}" "${m_vlc_tput_el}" "${m_vlc_tput_setaf_green}" "${m_vlc_tput_sgr0}" >&2
+
     [[ "${argument_usun_plik_po_przekonwertowaniu}" == "true" ]] && rm "${plik}" \
     && printf "[%sINFO%s]Źródłowy plik \"%s\" został usunięty.\n" "${m_vlc_tput_setaf_yellow}" "${m_vlc_tput_sgr0}" "${plik}" >&2
   done
