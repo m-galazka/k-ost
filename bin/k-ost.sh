@@ -3,24 +3,6 @@
 # Autor: Mariusz Gałązka <m.galazka.email@gmail.com>
 # Link: https://github.com/m-galazka/k-ost
 
-##########################################################################################
-# Skrypt stworzony dla ułatwienia konwersji pliku do formatu mp3.
-# Skrypt wykorzystuję aplikację VLC, którą należy zainstalować w systemie operacyjnym.
-#
-### INSTALACJA SKRYPTU
-# Przejdź do głównego katalogu k-ost.
-# Uruchom z uprawnieniami root skrypt instalacyjny  "./install.sh".
-#   Skrypt install.sh utworzony w systemie operacyjnym linki symboliczne dla:
-#       - k-ost/bin/k-ost.sh
-#       - k-ost/etc/k-ost.config
-# Skonfiguruj skrypt edytując plik konfiguracyjny "k-ost/etc/k-ost.config".
-#
-### PRZYKŁAD UŻYCIA
-# W terminalu wydaj następujące polecenia:
-#   Wyświetl stronę pomocy: "k-ost".
-#   Przekonwertuj pliki na mp3 "k-ost konwertuj mp3".
-##########################################################################################
-
 # Deklaracje tput
 declare -r tput_sc="$(tput sc)"
 declare -r tput_rc="$(tput rc)"
@@ -33,7 +15,7 @@ declare -r tput_setaf_green="$(tput setaf 2)"
 declare -r tput_setaf_yellow="$(tput setaf 3)"
 declare -r tput_setaf_cyan="$(tput setaf 6)"
 
-## Rozpoczęcie etapu weryfikacyjnego
+# Rozpoczęcie etapu weryfikacyjnego
 printf "Trwa sprawdzanie poprawności konfiguracji" >&2
 printf "%s [%s%sW TRAKCIE%s]" "${tput_sc}" "${tput_blink}" "${tput_setaf_cyan}" "${tput_sgr0}" >&2
 
@@ -67,7 +49,7 @@ else
   exit 22
 fi
 
-## Zakończenie etapu weryfikacyjnego
+# Zakończenie etapu weryfikacyjnego
 printf "%s%s [%sOK%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_green}" "${tput_sgr0}" >&2
 
 # Obsługa argumentów.
@@ -110,7 +92,7 @@ ${tput_setaf_cyan}
 ########################################${tput_sgr0}
 konwertuj                                      Uruchom tryb konwersji plików.
   mp3                                          Konwertuj pliki do formatu mp3.
------------------------------------------------------------------------------------------------------${tput_setaf_cyan}
+${tput_setaf_cyan}
 ########################################
 # Opis aktualnej konfiguracji.         #
 ########################################${tput_sgr0}
@@ -118,7 +100,7 @@ konwertuj                                      Uruchom tryb konwersji plików.
 Ścieżka źródłowa:                             "${domyslna_sciezka_zrodlowa}"
 Ścieżka docelowa:                             "${domyslna_sciezka_docelowa}"
 Ustawienie usun_plik_po_przekonwertowaniu:    "${usun_plik_po_przekonwertowaniu}"
------------------------------------------------------------------------------------------------------${tput_setaf_cyan}
+${tput_setaf_cyan}
 ########################################
 # Opis kodów wyjścia.                  #
 ########################################${tput_sgr0}

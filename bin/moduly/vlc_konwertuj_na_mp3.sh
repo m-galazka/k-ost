@@ -3,7 +3,6 @@
 # Autor: Mariusz Gałązka <m.galazka.email@gmail.com>
 # Link: https://github.com/m-galazka/k-ost
 
-##########################################################################################
 # Moduł odpowiedzialny za konwersję pliku do formatu mp3.
 # Moduł korzysta z aplikacji VLC zainstalowanej w systemie operacyjnym.
 #
@@ -27,7 +26,6 @@
 #                      "${domyslna_sciezka_zrodlowa}" \
 #                      "${domyslna_sciezka_docelowa}" \
 #                      "${usun_plik_po_przekonwertowaniu}"
-##########################################################################################
 
 vlc_konwertuj_na_mp3() {
   # Deklaracja zmiennych.
