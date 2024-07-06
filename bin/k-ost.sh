@@ -54,7 +54,7 @@ fi
 printf "%s%s [%sOK%s]\n" "${tput_rc}" "${tput_el}" "${tput_setaf_green}" "${tput_sgr0}" >&2
 
 # Obsługa argumentów.
-if [[ "${#}" > 0 ]] ; then
+if [[ "${#}" -gt 0 ]] ; then
   case "${1}" in
     konwertuj)
       case "${2}" in
